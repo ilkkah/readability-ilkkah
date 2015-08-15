@@ -16,7 +16,7 @@ var OPTIONS = {
 	normalizeRe: /\s{2,}/g,
 	// killBreaksRe: /(<br\s*\/?>(\s|&nbsp;?)*){1,}/g,
 	// videoRe: /http:\/\/(www\.)?(youtube|vimeo|youku|tudou|56|yinyuetai)\.com/i,
-	invalidElements: 'script,style,footer,menu,nav,ins,iframe,form,object'
+	invalidElements: 'script,style,footer,menu,nav,center,ins,iframe,form,object'
 };
 
 var dbg;
@@ -435,52 +435,31 @@ module.exports.grabArticle = function grabArticle($, preserveUnlikelyCandidates)
 		$(OPTIONS.unlikelyCandidatesIds + ',' + OPTIONS.unlikelyCandidatesClasses).remove();
 	}
 
-	// // Remove unlikely candidates */
-	// var continueFlag = false;
-	// if (!preserveUnlikelyCandidates) {
-	// 	var unlikelyMatchString = node.className + node.id;
-	// 	if (unlikelyMatchString.search(regexps.unlikelyCandidatesRe) !== -1 && unlikelyMatchString.search(regexps.okMaybeItsACandidateRe) == -1 && node.tagName !== 'HTML' && node.tagName !== "BODY") {
-	// 		dbg("Removing unlikely candidate - " + unlikelyMatchString);
-	// 		node.parentNode.removeChild(node);
-	// 		continueFlag = true;
-	// 	}
-	// }
-
 	// Turn all divs that don't have children block level elements into p's
-	$('div').has(OPTIONS.divToPElements).each(function() {
+	$('div').each(function() {
 		var node = this;
 		var element = $(node);
-		// console.log('element', element.html());
-		var phtml = '<p>' + element.html() + '</p>';
-		// console.log('phtml', phtml);
-		var p = $(phtml);
-		p.attr('class', element.attr('class'));
-		p.attr('id', element.attr('id'));
-		// console.log('element inner', element.html());
-		element.replaceWith(p);
-		// console.log('is', p.html());
+		if ($(OPTIONS.divToPElements, element).length === 0) {
+			var p = $('<p>' + element.html() + '</p>');
+			p.attr('class', element.attr('class'));
+			p.attr('id', element.attr('id'));
+			element.replaceWith(p);
+		} else {
+			// // EXPERIMENTAL
+			// element.children().each(function() {
+			// 	var childNode = $(this);
+			// 	if (childNode[0].type !== 'tag')
+			// 		console.log('aici',childNode[0].type, childNode[0].name);
+			// 	if (childNode[0].type === 3 /*TEXT_NODE*/ ) {
+			// 		// use span instead of p. Need more tests.
+			// 		dbg("replacing text node with a span tag with the same content.");
+			// 		var span = document.createElement('span');
+			// 		span.innerHTML = childNode.nodeValue;
+			// 		childNode.parentNode.replaceChild(span, childNode);
+			// 	}
+			// });
+		}
 	});
-	//return;
-
-	// if (!continueFlag && node.tagName === 'DIV') {
-	// 	if (node.innerHTML.search(regexps.divToPElementsRe) === -1) {
-	// 		dbg("Altering div to p");
-	// 		var newNode = document.createElement('p');
-	// 		newNode.innerHTML = node.innerHTML;
-	// 		node.parentNode.replaceChild(newNode, node);
-	// 	} else {
-	// 		// EXPERIMENTAL
-	// 		node.childNodes._toArray().forEach(function(childNode) {
-	// 			if (childNode.nodeType == 3 /*TEXT_NODE*/ ) {
-	// 				// use span instead of p. Need more tests.
-	// 				dbg("replacing text node with a span tag with the same content.");
-	// 				var span = document.createElement('span');
-	// 				span.innerHTML = childNode.nodeValue;
-	// 				childNode.parentNode.replaceChild(span, childNode);
-	// 			}
-	// 		});
-	// 	}
-	// }
 
 
 	/**
@@ -529,8 +508,6 @@ module.exports.grabArticle = function grabArticle($, preserveUnlikelyCandidates)
 		addContentScore(grandParent, contentScore / 2);
 	});
 
-	// console.log('candidates', candidates);
-
 	/**
 	 * After we've calculated scores, loop through all of the possible candidate nodes we found
 	 * and find the one with the highest score.
@@ -553,11 +530,6 @@ module.exports.grabArticle = function grabArticle($, preserveUnlikelyCandidates)
 	if (!topCandidate) {
 		return null;
 	}
-	// console.log('================RESULT===============');
-	// console.log(topCandidate[0].name);
-
-	// return topCandidate.html();
-
 
 	/**
 	 * Now that we have the top candidate, look through its siblings for content that might also be related.
@@ -588,8 +560,6 @@ module.exports.grabArticle = function grabArticle($, preserveUnlikelyCandidates)
 			var linkDensity = getLinkDensity($, node);
 			var nodeContent = getInnerText(node);
 			var nodeLength = nodeContent.length;
-
-			// console.log('linkDensity', linkDensity, nodeLength);
 
 			if (nodeLength > 80 && linkDensity < 0.25) {
 				append = true;
