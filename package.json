@@ -1,27 +1,26 @@
 {
-  "name": "node-readability",
-  "version": "1.0.2",
-  "author": "Zihua Li",
+  "name": "readability-js",
+  "version": "1.0.3",
+  "author": "Dumitru Cantea",
   "description": "Turning any web page into a clean view.",
-  "homepage": "https://github.com/luin/node-readability",
+  "homepage": "https://github.com/Ournet/readability-js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/luin/node-readability.git"
+    "url": "git://github.com/Ournet/readability-js.git"
   },
   "scripts": {
-    "test": "mocha -R spec"
+    "test": "./node_modules/mocha/bin/mocha -R spec",
+    "lint": "eslint ."
   },
   "main": "./src/readability",
-  "licenses": [
-    {
-      "type": "Apache License 2.0",
-      "url": "http://www.apache.org/licenses/LICENSE-2.0"
-    }
-  ],
+  "licenses": [{
+    "type": "Apache License 2.0",
+    "url": "http://www.apache.org/licenses/LICENSE-2.0"
+  }],
   "dependencies": {
-    "jsdom": "^1.0.3",
-    "request": "~2.40.0",
-    "encoding": "~0.1.7"
+    "cheerio": "^0.19.0",
+    "encoding": "~0.1.7",
+    "request": "~2.40.0"
   },
   "engines": [
     "node >=0.8.0"
