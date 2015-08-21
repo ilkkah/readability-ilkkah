@@ -10,4 +10,12 @@ describe('result', function() {
 			done();
 		});
 	});
+
+	it('should not read style:none blocks', function(done) {
+		read('http://zaol.hu/kulfold/megrongaltak-petofi-sandor-szobrat-ungvaron-1720762', function(err, result) {
+			result.content.text().length.should.equal(1240);
+			// console.log(result.content.text());
+			done();
+		});
+	});
 });

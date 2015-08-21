@@ -390,6 +390,10 @@ function initializeNode(node) {
 	addContentScore(node, getClassWeight(node));
 }
 
+function isValidElement(element) {
+	return (element.css('display') !== 'none');
+}
+
 
 module.exports.grabTitle = function grabTitle($) {
 	var title = $('title', 'head').text() || '';
@@ -439,6 +443,10 @@ module.exports.grabArticle = function grabArticle($, preserveUnlikelyCandidates)
 	$('div').each(function() {
 		var node = this;
 		var element = $(node);
+		if (!isValidElement(element)) {
+			element.remove();
+			return;
+		}
 		if ($(OPTIONS.divToPElements, element).length === 0) {
 			var p = $('<p>' + element.html() + '</p>');
 			p.attr('class', element.attr('class'));
@@ -472,8 +480,16 @@ module.exports.grabArticle = function grabArticle($, preserveUnlikelyCandidates)
 	$('p').each(function(i, paragraph) {
 		// console.log(paragraph);
 		paragraph = $(paragraph);
+		if (!isValidElement(paragraph)) {
+			paragraph.remove();
+			return;
+		}
 		var parent = paragraph.parent();
 		var grandParent = parent.parent();
+		if (!isValidElement(parent)) {
+			parent.remove();
+			return;
+		}
 		var innerText = getInnerText(paragraph);
 		// If this paragraph is less than 25 characters, don't even count it.
 		if (innerText.length < 25) {

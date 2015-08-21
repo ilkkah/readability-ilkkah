@@ -9,7 +9,7 @@
     "url": "git://github.com/Ournet/readability-js.git"
   },
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha -R spec",
+    "test": "./node_modules/mocha/bin/mocha -R spec -t 4000",
     "lint": "eslint ."
   },
   "main": "./src/readability",
