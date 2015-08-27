@@ -555,7 +555,7 @@ module.exports.grabArticle = function grabArticle($, preserveUnlikelyCandidates)
 
 	var siblingScoreThreshold = Math.max(10, getContentScore(topCandidate) * 0.2);
 	// var siblingNodes = topCandidate.parentNode.childNodes;
-	topCandidate.children().each(function(e, node) {
+	topCandidate.parent().children().each(function(e, node) {
 		node = $(node);
 		var append = false;
 
