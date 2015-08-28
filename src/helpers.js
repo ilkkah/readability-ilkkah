@@ -16,7 +16,7 @@ var OPTIONS = {
 	normalizeRe: /\s{2,}/g,
 	// killBreaksRe: /(<br\s*\/?>(\s|&nbsp;?)*){1,}/g,
 	// videoRe: /http:\/\/(www\.)?(youtube|vimeo|youku|tudou|56|yinyuetai)\.com/i,
-	invalidElements: 'script,style,footer,menu,nav,center,ins,iframe,form,object'
+	invalidElements: 'script,style,footer,menu,nav,center,ins,iframe,form,object,.comment-count,.fb-comments,.close'
 };
 
 var dbg;
@@ -441,8 +441,7 @@ module.exports.grabArticle = function grabArticle($, preserveUnlikelyCandidates)
 
 	// Turn all divs that don't have children block level elements into p's
 	$('div').each(function() {
-		var node = this;
-		var element = $(node);
+		var element = $(this);
 		if (!isValidElement(element)) {
 			element.remove();
 			return;
@@ -453,17 +452,14 @@ module.exports.grabArticle = function grabArticle($, preserveUnlikelyCandidates)
 			p.attr('id', element.attr('id'));
 			element.replaceWith(p);
 		} else {
-			// // EXPERIMENTAL
-			// element.children().each(function() {
+			// EXPERIMENTAL
+			// element.contents().each(function() {
 			// 	var childNode = $(this);
-			// 	if (childNode[0].type !== 'tag')
-			// 		console.log('aici',childNode[0].type, childNode[0].name);
-			// 	if (childNode[0].type === 3 /*TEXT_NODE*/ ) {
+			// 	if (childNode[0].type === 'text') {
 			// 		// use span instead of p. Need more tests.
 			// 		dbg("replacing text node with a span tag with the same content.");
-			// 		var span = document.createElement('span');
-			// 		span.innerHTML = childNode.nodeValue;
-			// 		childNode.parentNode.replaceChild(span, childNode);
+			// 		var span = $('<span>' + childNode[0].data + '</span>');
+			// 		childNode.replaceWith(span);
 			// 	}
 			// });
 		}

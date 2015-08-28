@@ -42,7 +42,7 @@ describe('encoding', function() {
 	it('windows-1251', function(done) {
 		read('http://www.gazeta.ru/business/2015/08/14/7688218.shtml', function(err, result) {
 			result.title.should.equal('Что делать, если у вашего банка-кредитора отозвали лицензию или в нем введено внешнее управление - Газета.Ru');
-			result.content.text().length.should.equal(4148);
+			result.content.text().length.should.equal(4138);
 			// console.log(result.content.text());
 			done();
 		});

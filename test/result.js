@@ -18,4 +18,12 @@ describe('result', function() {
 			done();
 		});
 	});
+
+	it('should work for text nodes', function(done) {
+		read('http://www.blikk.hu/blikk_sztarvilag/noknek-tervezett-sikositojat-reklamozza-carmen-electra-2391519', function(err, result) {
+			result.content.text().length.should.equal(0);
+			// console.log(result.content.text());
+			done();
+		});
+	});
 });
