@@ -423,7 +423,8 @@ module.exports.grabTitle = function grabTitle($) {
  *
  * @return Element
  **/
-module.exports.grabArticle = function grabArticle($, preserveUnlikelyCandidates) {
+module.exports.grabArticle = function grabArticle($, options) {
+	options = options || {};
 	/**
 	 * First, node prepping. Trash nodes that look cruddy (like ones with the class name "comment", etc), and turn divs
 	 * into P tags where they have been used inappropriately (as in, where they contain no other block level elements.)
@@ -435,7 +436,7 @@ module.exports.grabArticle = function grabArticle($, preserveUnlikelyCandidates)
 	$(OPTIONS.invalidElements).remove();
 
 	// Remove unlikely candidates */
-	if (!preserveUnlikelyCandidates) {
+	if (!options.preserveUnlikelyCandidates) {
 		$(OPTIONS.unlikelyCandidatesIds + ',' + OPTIONS.unlikelyCandidatesClasses).remove();
 	}
 
@@ -462,6 +463,7 @@ module.exports.grabArticle = function grabArticle($, preserveUnlikelyCandidates)
 			// 		childNode.replaceWith(span);
 			// 	}
 			// });
+			// console.log('element content: ', element.html());
 		}
 	});
 
@@ -550,8 +552,11 @@ module.exports.grabArticle = function grabArticle($, preserveUnlikelyCandidates)
 	var articleContent = $('<div id="readability-content"></div>');
 
 	var siblingScoreThreshold = Math.max(10, getContentScore(topCandidate) * 0.2);
-	// var siblingNodes = topCandidate.parentNode.childNodes;
-	topCandidate.parent().children().each(function(e, node) {
+	/**
+	 * Find only article body or all page main content: header, footer, etc.
+	 */
+	var siblingNodes = options.onlyArticleBody === true ? topCandidate.children() : topCandidate.parent().children();
+	siblingNodes.each(function(e, node) {
 		node = $(node);
 		var append = false;
 
@@ -560,7 +565,7 @@ module.exports.grabArticle = function grabArticle($, preserveUnlikelyCandidates)
 		// dbg('Looking at sibling node: ' + siblingNode + ' (' + siblingNode.className + ':' + siblingNode.id + ')' + ((typeof siblingNode.readability != 'undefined') ? (' with score ' + siblingNode.readability.contentScore) : ''));
 		// dbg('Sibling has score ' + (siblingNode.readability ? siblingNode.readability.contentScore : 'Unknown'));
 
-		if (node === topCandidate) {
+		if (options.onlyArticleBody !== true && getElementId(node) === getElementId(topCandidate)) {
 			append = true;
 		}
 

@@ -61,11 +61,11 @@ function parseContentType(str) {
 	};
 }
 
-function readPage($, callback) {
+function readPage($, options, callback) {
 	var date = Date.now(),
 		content, title;
 	try {
-		content = helpers.grabArticle($);
+		content = helpers.grabArticle($, options);
 		title = helpers.grabTitle($);
 	} catch (e) {
 		return callback(e);
@@ -81,7 +81,7 @@ function readPage($, callback) {
 	callback(null, result);
 }
 
-function readHtml(html, callback) {
+function readHtml(html, options, callback) {
 	if (typeof html !== 'string') {
 		html = html.toString();
 	}
@@ -91,7 +91,7 @@ function readHtml(html, callback) {
 	} catch (e) {
 		return callback(e);
 	}
-	readPage(page, callback);
+	readPage(page, options, callback);
 }
 
 function readUrl(url, requestOptions, options, callback) {
@@ -134,19 +134,25 @@ function read(html, options, callback) {
 	}
 
 	var overrideEncoding = options.encoding,
-		preprocess = options.preprocess;
+		preprocess = options.preprocess,
+		onlyArticleBody = options.onlyArticleBody;
 
 	options.encoding = null;
 	delete options.preprocess;
+	delete options.onlyArticleBody;
+
+	var opts = {
+		onlyArticleBody: onlyArticleBody
+	};
 
 	// If is a cheerio object/function
 	if (html && typeof html === 'function' && html.html && html.text) {
-		return readPage(html, callback);
+		return readPage(html, opts, callback);
 	}
 
 	var parsedURL = urllib.parse(html);
 	if (['http:', 'https:', 'unix:', 'ftp:', 'sftp:'].indexOf(parsedURL.protocol) === -1) {
-		readHtml(html, callback);
+		readHtml(html, opts, callback);
 	} else {
 		readUrl(html, options, {
 			preprocess: preprocess,
@@ -155,7 +161,7 @@ function read(html, options, callback) {
 			if (err) {
 				return callback(err);
 			}
-			readHtml(buffer, callback);
+			readHtml(buffer, opts, callback);
 		});
 	}
 }

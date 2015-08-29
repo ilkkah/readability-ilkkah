@@ -3,6 +3,7 @@
 
 var fs = require('fs');
 var path = require('path');
+var should = require('should');
 var read = require('../src/readability');
 
 var filePath = path.join(__dirname, 'test.html');
@@ -14,8 +15,8 @@ describe('charset', function() {
 				encoding: 'utf-8'
 			}, function(err, html) {
 				read(html, function(readError, result) {
-					result.content.text().should.include('谷歌');
-					result.title.should.include('谷歌');
+					result.content.text().should.match(/谷歌/);
+					result.title.should.match(/谷歌/);
 					done();
 				});
 			});
