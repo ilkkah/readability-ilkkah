@@ -82,7 +82,7 @@ describe('encoding', function() {
 				'Content-Type': 'text/html'
 			});
 		read(url + page, function(err, result) {
-			result.title.should.equal('Что делать, если у вашего банка-кредитора отозвали лицензию или в нем введено внешнее управление');
+			result.title.should.equal('Как платить кредиты «покойным» банкам');
 			// console.log(result.content.text());
 			result.content.text().length.should.be.aboveOrEqual(4138);
 			done();
