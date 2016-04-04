@@ -6,7 +6,7 @@ var path = require('path');
 var should = require('should');
 var read = require('../src/readability');
 
-var filePath = path.join(__dirname, 'test.html');
+var filePath = path.join(__dirname, 'fixtures', 'test.html');
 
 describe('charset', function() {
 	describe('setted in the html', function() {
