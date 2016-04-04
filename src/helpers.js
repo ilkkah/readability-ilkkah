@@ -417,6 +417,61 @@ module.exports.grabTitle = function grabTitle($) {
 	return title;
 };
 
+module.exports.grabMeta = function grabMeta($) {
+	var metadata = {};
+	var values = {};
+
+	// Match "description", or Twitter's "twitter:description" (Cards)
+	// in name attribute.
+	var namePattern = /^\s*((twitter)\s*:\s*)?(description|title)\s*$/gi;
+
+	// Match Facebook's Open Graph title & description properties.
+	var propertyPattern = /^\s*og\s*:\s*(description|title)\s*$/gi;
+
+	$('meta').each(function () {
+		var meta = $(this);
+		var elementName = meta.attr('name');
+		var elementProperty = meta.attr('property');
+
+		var name = null;
+		if (namePattern.test(elementName)) {
+			name = elementName;
+		} else if (propertyPattern.test(elementProperty)) {
+			name = elementProperty;
+		}
+
+		if (name) {
+			var content = meta.attr('content');
+			if (content) {
+				// Convert to lowercase and remove any whitespace
+				// so we can match below.
+				name = name.toLowerCase().replace(/\s/g, '');
+				values[name] = content.trim();
+			}
+		}
+	});
+
+	if ('description' in values) {
+		metadata.excerpt = values.description;
+	} else if ('og:description' in values) {
+		// Use facebook open graph description.
+		metadata.excerpt = values['og:description'];
+	} else if ('twitter:description' in values) {
+		// Use twitter cards description.
+		metadata.excerpt = values['twitter:description'];
+	}
+
+	if ('og:title' in values) {
+		// Use facebook open graph title.
+		metadata.title = values['og:title'];
+	} else if ('twitter:title' in values) {
+		// Use twitter cards title.
+		metadata.title = values['twitter:title'];
+	}
+
+	return metadata;
+};
+
 /***
  * grabArticle - Using a variety of metrics (content score, classname, element types), find the content that is
  *               most likely to be the stuff a user wants to read. Then return it wrapped up in a div.

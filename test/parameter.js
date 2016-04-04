@@ -1,17 +1,30 @@
 /*eslint handle-callback-err:0*/
 'use strict';
-
+var fs = require('fs');
+var path = require('path');
 var should = require('should');
+var nock = require('nock');
 var read = require('../src/readability');
+
+var file = function (filename) {
+	return fs.readFileSync(path.join(__dirname, 'fixtures', filename));
+};
 
 describe('parameters', function() {
 
 	describe('options', function() {
 		it('should pass the options to request lib', function(done) {
-			read('http://dribbble.com/', {
+			var url = 'http://dribbble.com/';
+			var dribbble = nock(url)
+				.post('/')
+				.reply(200, '<body>dribbble</body>', {
+					'Content-Type': 'text/html'
+				});
+			read(url, {
 				method: 'POST'
 			}, function(err, result) {
 				should.exists(result);
+				dribbble.isDone().should.equal(true);
 				done();
 			});
 		});
@@ -19,7 +32,14 @@ describe('parameters', function() {
 
 	describe('preprocess', function() {
 		it('should preprocess document', function(done) {
-			read('http://colorlines.com/archives/2011/08/dispatch_from_angola_faith-based_slavery_in_a_louisiana_prison.html', {
+			var url = 'http://colorlines.com/archives/2011/08';
+			var page = '/dispatch_from_angola_faith-based_slavery_in_a_louisiana_prison.html';
+			nock(url)
+				.get(page)
+				.reply(200, file('colorlines.html'), {
+					'Content-Type': 'text/html'
+				});
+			read(url + page, {
 					preprocess: function(source, response, contentType, callback) {
 						should.exist(source);
 						// source.length.should.equal(50734);
@@ -40,7 +60,13 @@ describe('parameters', function() {
 		});
 
 		it('should stop processing document', function(done) {
-			read('http://www.whitehouse.gov/', {
+			var url = 'http://www.whitehouse.gov/';
+			nock(url)
+				.get('/')
+				.reply(200, file('whitehouse.html'), {
+					'Content-Type': 'text/html'
+				});
+			read(url, {
 				preprocess: function(source, response, contentType, callback) {
 					should.exist(source);
 					// source.length.should.equal(71002);

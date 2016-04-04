@@ -62,11 +62,12 @@ function parseContentType(str) {
 }
 
 function readPage($, options, callback) {
-	var date = Date.now(),
-		content, title;
+	// var date = Date.now();
+	var content, title, metadata;
 	try {
 		content = helpers.grabArticle($, options);
 		title = helpers.grabTitle($);
+		metadata = helpers.grabMeta($);
 	} catch (e) {
 		return callback(e);
 	}
@@ -74,8 +75,9 @@ function readPage($, options, callback) {
 	// console.log('grabArticle', Date.now() - date);
 	content = content ? content : false;
 	var result = {
-		title: title,
+		title: metadata.title || title,
 		content: content,
+		excerpt: metadata.excerpt,
 		document: $
 	};
 	callback(null, result);
