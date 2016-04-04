@@ -3,6 +3,7 @@
 
 var fs = require('fs');
 var path = require('path');
+/*eslint no-unused-vars:0*/
 var should = require('should');
 var read = require('../src/readability');
 

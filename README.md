@@ -69,6 +69,6 @@ read(url, {
 
 - **content** - The article content of the web page. Return false if failed. Is a Cheerio object.
 
-- **title** - The article title of the web page. It's may not same to the text in the <title> tag.
+- **title** - The article title of the web page. It's may not same to the text in the `<title>` tag.
 
-- **excerpt** - The article description from any description, og:description or twitter:description <meta>
+- **excerpt** - The article description from any description, og:description or twitter:description `<meta>`

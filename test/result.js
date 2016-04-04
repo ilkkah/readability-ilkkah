@@ -1,12 +1,14 @@
 /*eslint handle-callback-err:0*/
 'use strict';
+
 var fs = require('fs');
 var path = require('path');
+/*eslint no-unused-vars:0*/
 var should = require('should');
 var nock = require('nock');
 var read = require('../src/readability');
 
-var file = function (filename) {
+var file = function(filename) {
 	return fs.readFileSync(path.join(__dirname, 'fixtures', filename));
 };
 
@@ -47,7 +49,7 @@ describe('result', function() {
 			.reply(200, file('ietf.html'), {
 				'Content-Type': 'text/html'
 			});
-		read(url  + page, {
+		read(url + page, {
 			onlyArticleBody: true
 		}, function(err, result) {
 			// console.log(result.title);
