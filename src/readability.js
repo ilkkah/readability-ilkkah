@@ -62,8 +62,8 @@ function parseContentType(str) {
 }
 
 function readPage($, options, callback) {
-	var date = Date.now(),
-		content, title;
+	// var date = Date.now();
+	var content, title;
 	try {
 		content = helpers.grabArticle($, options);
 		title = helpers.grabTitle($);
