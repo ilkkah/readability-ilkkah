@@ -1,4 +1,6 @@
-# Readability
+# Readability - DEBRICATED
+
+## Renamed to [ascrape](https://github.com/Mitica/ascrape-js).
 
 Nodejs module for extracting web page content using Cheerio.
 
